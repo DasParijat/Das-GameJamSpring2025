@@ -3,6 +3,7 @@ extends Node2D
 @onready var color_modulate : CanvasModulate = $Room/Background/ColorModulate
 @onready var door_container : HBoxContainer = $Room/DoorContainer
 @onready var points_label : Label = $PointsLabel
+@onready var orb : TextureButton = $Room/Orb
 
 #var tween : Tween = Tween.new()
 
@@ -23,11 +24,15 @@ func _ready() -> void:
 	GRH.connect("door_entered", Callable(self, "_on_door_entered"))
 	randomize()
 	
-	generate_rooms(8)
+	generate_rooms(5)
 	generate_doors()
 	
-	GRH.points = 100
+	GRH.points = PrimMST.new().calculate_mst(rooms_array, doors_array)
+	if GRH.points == 0:
+		GRH.points = 5 * doors_array.size() # free points for Prim failing
+	print(GRH.points)
 	
+	rooms_array[0].orb_found = true
 	cur_room = rooms_array[0]
 	load_room(cur_room)
 	
@@ -93,8 +98,7 @@ func has_reverse_door(room1: Room, room2: Room) -> bool:
 	return false
 
 func load_room(room : Room) -> void:
-	room_transition = true
-	points_label.text = (str(GRH.points) + " points - Room " + room.letter_id)
+	update_label_text()
 	color_modulate.color = room.mod_color
 	
 	# Clear existing doors
@@ -107,8 +111,13 @@ func load_room(room : Room) -> void:
 		if door.check_rooms(room):
 			var door_scene = preload("res://Game Scenes/door.tscn").instantiate()
 			door_scene.door = door
+			door_scene.cur_room = cur_room
 			door_container.add_child(door_scene)
-	room_transition = false
+	
+	if room.orb_found:
+		orb.hide()
+	else:
+		orb.show()
 	
 func _on_door_entered(door : Door) -> void:
 	print(door.room1.letter_id, " ", door.room2.letter_id)
@@ -122,6 +131,22 @@ func _on_door_entered(door : Door) -> void:
 		print("removing START")
 		rooms_array.pop_front()
 		doors_array.pop_front()
-		
+	
 	cur_room = next_room
 	load_room(next_room)
+
+func update_label_text() -> void:
+	points_label.text = (str(GRH.points) + " points \n" 
+						+ (str(GRH.orbs_found) + " / " + str(rooms_array.size())) 
+						+ " orbs \nRoom " + cur_room.letter_id)
+						
+func _on_orb_pressed() -> void:
+	cur_room.orb_found = true
+	GRH.orbs_found += 1
+	update_label_text()
+	if GRH.orbs_found == rooms_array.size():
+		cur_room = Room.new("WIN", Color(0.8, 0.8, 0.8))
+		load_room(cur_room)
+		
+	orb.hide()
+	

@@ -9,8 +9,10 @@ extends Node2D
 var cur_room : Room
 var points : int
 
-var rooms_array : Array[Room] = [Room.new("START", Color(0,0,0))] # starting room
+var rooms_array : Array[Room] = [Room.new("START", Color(0.5,0.5,0.5))] # starting room
 var doors_array : Array[Door]
+
+var room_transition : bool = false
 
 var alphabet : Array[String] = [
 	"A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", 
@@ -33,13 +35,13 @@ func generate_rooms(num_of_rooms : int = 10) -> void:
 	if num_of_rooms < 5 or num_of_rooms > 26:
 		num_of_rooms = 10
 		printerr("Game: GIVEN NUM_OF_ROOMS NOT VALID, SET TO 10")
-		 
+	
 	for i in range(num_of_rooms):
 		rooms_array.append(
 			Room.new(alphabet[i], 
-					Color(randi_range(0.2,0.6)
-						,randi_range(0.2,0.6)
-						,randi_range(0.2,0.6)))
+					Color(randf_range(0.5,0.8)
+						,randf_range(0.5,0.8)
+						,randf_range(0.5,0.8)))
 			)
 		#print("added room: ", rooms_array[i + 1].letter_id)
 
@@ -48,6 +50,7 @@ func generate_doors() -> void:
 	# Starting door
 	# NOTE - no other room should connect to starting door besides A
 	doors_array = [Door.new(rooms_array[0], rooms_array[1])] # starting door
+	doors_array[0].cost = 0 # make sure start door is free
 	#Door.new(rooms_array[0], rooms_array[1]).print_door()
 
 	#print("1ST LOOP")
@@ -90,19 +93,35 @@ func has_reverse_door(room1: Room, room2: Room) -> bool:
 	return false
 
 func load_room(room : Room) -> void:
-	points_label.text = (str(GRH.points) + " points")
+	room_transition = true
+	points_label.text = (str(GRH.points) + " points - Room " + room.letter_id)
+	color_modulate.color = room.mod_color
+	
 	# Clear existing doors
 	for child in door_container.get_children():
 		child.queue_free()
 
 	# Find all doors connected to current room
-	print(room.letter_id)
+	#print(room.letter_id)
 	for door in doors_array:
-		if door.room1 == room:
+		if door.check_rooms(room):
 			var door_scene = preload("res://Game Scenes/door.tscn").instantiate()
 			door_scene.door = door
 			door_container.add_child(door_scene)
+	room_transition = false
 	
-func _on_door_entered(door) -> void:
-	print("door is opened, game can tell")
-	load_room(door.room2)
+func _on_door_entered(door : Door) -> void:
+	print(door.room1.letter_id, " ", door.room2.letter_id)
+	var next_room : Room
+	if door.room1 == cur_room:
+		next_room = door.room2
+	else:
+		next_room = door.room1
+	
+	if cur_room.letter_id == "START":
+		print("removing START")
+		rooms_array.pop_front()
+		doors_array.pop_front()
+		
+	cur_room = next_room
+	load_room(next_room)

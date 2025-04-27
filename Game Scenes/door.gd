@@ -14,7 +14,7 @@ func _ready() -> void:
 		cost.text = str(door.cost)
 	else:
 		texture.texture = preload("uid://7gfggwe3vnl2")
-		cost.text = ""
+		cost.text = door.room2.letter_id
 
 func _on_pressed() -> void:
 	if door.is_locked:
@@ -22,11 +22,10 @@ func _on_pressed() -> void:
 			door.is_locked = false
 			GRH.points -= door.cost
 			texture.texture = preload("uid://7gfggwe3vnl2")
-			cost.text = ""
+			cost.text = door.room2.letter_id
 		else:
 			return
+	
 	GRH.emit_signal("door_entered", door)
 
-func _on_door_entered() -> void:
-	button.disabled = true
 	

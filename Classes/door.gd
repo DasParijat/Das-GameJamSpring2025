@@ -28,7 +28,7 @@ func unlock(points : int) -> bool:
 	## Handles unlocking door
 	## Does NOT handle taking away from player cost, 
 	## instead whether unlocking was successful or not to Game
-	if points > cost:
+	if points >= cost:
 		is_locked = false
 		return true
 	return false

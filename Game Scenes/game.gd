@@ -26,15 +26,9 @@ func _ready() -> void:
 	generate_rooms(5)
 	generate_doors()
 	
-	GRH.points = PrimMST.new().calculate_mst(rooms_array, doors_array)
-	if GRH.points == 0:
-		GRH.points = randi_range(3, 5) * doors_array.size() # free points for Prim failing
-	print(GRH.points)
-	
 	rooms_array[0].orb_found = true
 	background.texture = preload("uid://dkbm417ua0v0u")
-	cur_room = rooms_array[0]
-	load_room(cur_room)
+	start_game(rooms_array[0])
 	
 func generate_rooms(num_of_rooms : int = 10) -> void:
 	if num_of_rooms < 5 or num_of_rooms > 26:
@@ -97,6 +91,21 @@ func has_reverse_door(room1: Room, room2: Room) -> bool:
 			return true
 	return false
 
+func start_game(start_room : Room) -> void:
+	for door in doors_array:
+		door.is_locked = true
+	for room in rooms_array:
+		if room.letter_id != "START":
+			room.orb_found = false
+		
+	GRH.points = PrimMST.new().calculate_mst(rooms_array, doors_array)
+	if GRH.points == 0:
+		GRH.points = randi_range(3, 5) * doors_array.size() # free points for Prim failing
+	
+	cur_room = start_room
+	load_room(cur_room)
+	
+	
 func load_room(room : Room) -> void:
 	update_label_text()
 	color_modulate.color = room.mod_color

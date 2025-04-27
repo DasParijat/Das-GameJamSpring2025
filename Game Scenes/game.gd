@@ -23,7 +23,7 @@ func _ready() -> void:
 	GRH.connect("door_entered", Callable(self, "_on_door_entered"))
 	randomize()
 	
-	generate_rooms(5)
+	generate_rooms(randi_range(5, 15))
 	generate_doors()
 	
 	rooms_array[0].orb_found = true

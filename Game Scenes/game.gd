@@ -12,10 +12,15 @@ var alphabet : Array[String] = [
 ]
 
 func _ready() -> void:
+	GRH.connect("door_entered", Callable(self, "_on_door_entered"))
 	randomize()
 	
 	generate_rooms(8)
 	generate_doors()
+	
+	GRH.points = 100
+	
+	cur_room = rooms_array[0]
 	
 func generate_rooms(num_of_rooms : int = 10) -> void:
 	if num_of_rooms < 5 or num_of_rooms > 26:
@@ -76,3 +81,7 @@ func has_reverse_door(room1: Room, room2: Room) -> bool:
 		if (door.room1 == room2 and door.room2 == room1) or (door.room1 == room1 and door.room2 == room2):
 			return true
 	return false
+
+func _on_door_entered(door) -> void:
+	pass
+	# handle transition here

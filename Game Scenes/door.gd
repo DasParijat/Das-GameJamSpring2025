@@ -25,7 +25,7 @@ func _on_pressed() -> void:
 			cost.text = ""
 		else:
 			return
-	GRH.emit_signal("door_entered")
+	GRH.emit_signal("door_entered", door)
 
 func _on_door_entered() -> void:
 	button.disabled = true

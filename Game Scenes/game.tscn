@@ -16,28 +16,40 @@ script = ExtResource("1_v2p7b")
 
 [node name="Camera2D" type="Camera2D" parent="."]
 
-[node name="Background" type="TextureRect" parent="."]
+[node name="Room" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="Background" type="TextureRect" parent="Room"]
 offset_left = -480.0
 offset_top = -360.0
 offset_right = 480.0
 offset_bottom = 360.0
 texture = ExtResource("1_k8ln2")
 
-[node name="ColorModulate" type="CanvasModulate" parent="Background"]
+[node name="ColorModulate" type="CanvasModulate" parent="Room/Background"]
 
-[node name="DoorContainer" type="HBoxContainer" parent="."]
-offset_right = 40.0
-offset_bottom = 40.0
-alignment = 1
+[node name="DoorContainer" type="HBoxContainer" parent="Room"]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -351.0
+offset_top = -310.0
+offset_right = 166.0
+offset_bottom = -279.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_constants/separation = 200
 
-[node name="LightOverlay" type="TextureRect" parent="."]
-offset_left = -480.0
-offset_top = -360.0
-offset_right = 480.0
-offset_bottom = 360.0
+[node name="LightOverlay" type="PointLight2D" parent="Room"]
 texture = ExtResource("2_37ubt")
 
-[node name="Points" type="Label" parent="."]
+[node name="PointsLabel" type="Label" parent="."]
 offset_left = -474.0
 offset_top = -354.0
 offset_right = -357.0

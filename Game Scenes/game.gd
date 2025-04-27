@@ -1,5 +1,11 @@
 extends Node2D
 
+@onready var color_modulate : CanvasModulate = $Room/Background/ColorModulate
+@onready var door_container : HBoxContainer = $Room/DoorContainer
+@onready var points_label : Label = $PointsLabel
+
+#var tween : Tween = Tween.new()
+
 var cur_room : Room
 var points : int
 
@@ -21,6 +27,7 @@ func _ready() -> void:
 	GRH.points = 100
 	
 	cur_room = rooms_array[0]
+	load_room(cur_room)
 	
 func generate_rooms(num_of_rooms : int = 10) -> void:
 	if num_of_rooms < 5 or num_of_rooms > 26:
@@ -41,11 +48,11 @@ func generate_doors() -> void:
 	# Starting door
 	# NOTE - no other room should connect to starting door besides A
 	doors_array = [Door.new(rooms_array[0], rooms_array[1])] # starting door
-	Door.new(rooms_array[0], rooms_array[1]).print_door()
+	#Door.new(rooms_array[0], rooms_array[1]).print_door()
 
-	print("1ST LOOP")
+	#print("1ST LOOP")
 	## 2nd for loop (add random doors for each room)
-	for loop in range(clampi(round(rooms_array.size() / 5), 1, 2)):
+	for loop in range(1): #range(clampi(round(rooms_array.size() / 5), 1, 2)):
 		for i in range(rooms_array.size() - 1):
 			var room1 : int
 			var room2 : int
@@ -65,7 +72,7 @@ func generate_doors() -> void:
 				doors_array.append(new_door)
 				new_door.print_door()
 	
-	print("2ND LOOP") 
+	#print("2ND LOOP") 
 	# NOTE - Stopping this for loop can cause a small chance of creating an unconnected graph,
 	#		however, it may be more interesting to not have them alphabetically connected
 	for i in range(rooms_array.size() - 2):
@@ -82,6 +89,20 @@ func has_reverse_door(room1: Room, room2: Room) -> bool:
 			return true
 	return false
 
+func load_room(room : Room) -> void:
+	points_label.text = (str(GRH.points) + " points")
+	# Clear existing doors
+	for child in door_container.get_children():
+		child.queue_free()
+
+	# Find all doors connected to current room
+	print(room.letter_id)
+	for door in doors_array:
+		if door.room1 == room:
+			var door_scene = preload("res://Game Scenes/door.tscn").instantiate()
+			door_scene.door = door
+			door_container.add_child(door_scene)
+	
 func _on_door_entered(door) -> void:
-	pass
-	# handle transition here
+	print("door is opened, game can tell")
+	load_room(door.room2)

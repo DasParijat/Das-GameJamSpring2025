@@ -37,18 +37,8 @@ func generate_doors() -> void:
 	# NOTE - no other room should connect to starting door besides A
 	doors_array = [Door.new(rooms_array[0], rooms_array[1])] # starting door
 	Door.new(rooms_array[0], rooms_array[1]).print_door()
-	
-	## 1st for loop (make sure all rooms are connected)
-	# TODO consider moving first loop to after 2nd loop
-	for i in range(rooms_array.size() - 2):
-		break
-		doors_array.append(
-			Door.new(rooms_array[i + 1], 
-					rooms_array[i + 2])
-		)
-		Door.new(rooms_array[i + 1], rooms_array[i + 2]).print_door()
-	
-	print("2ND LOOP")
+
+	print("1ST LOOP")
 	## 2nd for loop (add random doors for each room)
 	for loop in range(clampi(round(rooms_array.size() / 5), 1, 2)):
 		for i in range(rooms_array.size() - 1):
@@ -59,7 +49,7 @@ func generate_doors() -> void:
 			for j in range(rooms_array.size()):
 				room1 = i + 1
 				room2 = randi_range(1, rooms_array.size() - 1)
-				while room2 == room1 or abs(room2 - room1) == 1:
+				while room2 == room1: #or abs(room2 - room1) == 1:
 					room2 = randi_range(1, rooms_array.size() - 1)
 					
 				if not has_reverse_door(rooms_array[room1], rooms_array[room2]):
@@ -69,7 +59,17 @@ func generate_doors() -> void:
 			if new_door:
 				doors_array.append(new_door)
 				new_door.print_door()
-			
+	
+	print("2ND LOOP") 
+	# NOTE - Stopping this for loop can cause a small chance of creating an unconnected graph,
+	#		however, it may be more interesting to not have them alphabetically connected
+	for i in range(rooms_array.size() - 2):
+		#break
+		var new_door : Door = Door.new(rooms_array[i + 1], 
+										rooms_array[i + 2])
+		if (new_door not in doors_array) and (not has_reverse_door(rooms_array[i + 1], rooms_array[i + 2])):
+			doors_array.append(new_door)
+			new_door.print_door()
 
 func has_reverse_door(room1: Room, room2: Room) -> bool:
 	for door in doors_array:

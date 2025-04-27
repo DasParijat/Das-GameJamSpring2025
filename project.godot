@@ -11,5 +11,11 @@ config_version=5
 [application]
 
 config/name="GameJamSpring2025"
+run/main_scene="res://Game Scenes/game.tscn"
 config/features=PackedStringArray("4.3", "Forward Plus")
 config/icon="res://icon.svg"
+
+[display]
+
+window/size/viewport_width=960
+window/size/viewport_height=720

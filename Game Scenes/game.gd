@@ -97,7 +97,8 @@ func start_game(start_room : Room) -> void:
 	for room in rooms_array:
 		if room.letter_id != "START":
 			room.orb_found = false
-		
+	
+	GRH.orbs_found = 0
 	GRH.points = PrimMST.new().calculate_mst(rooms_array, doors_array)
 	if GRH.points == 0:
 		GRH.points = randi_range(3, 5) * doors_array.size() # free points for Prim failing
@@ -105,6 +106,10 @@ func start_game(start_room : Room) -> void:
 	cur_room = start_room
 	load_room(cur_room)
 	
+func _process(delta: float) -> void:
+	# process solely for handling input
+	if Input.is_action_just_pressed("reset") and cur_room.letter_id != "START":
+		start_game(rooms_array[0])
 	
 func load_room(room : Room) -> void:
 	update_label_text()

@@ -14,11 +14,11 @@ var alphabet : Array[String] = [
 func _ready() -> void:
 	randomize()
 	
-	generate_rooms()
+	generate_rooms(8)
 	generate_doors()
 	
 func generate_rooms(num_of_rooms : int = 10) -> void:
-	if num_of_rooms < 4 or num_of_rooms > 26:
+	if num_of_rooms < 5 or num_of_rooms > 26:
 		num_of_rooms = 10
 		printerr("Game: GIVEN NUM_OF_ROOMS NOT VALID, SET TO 10")
 		 
@@ -39,7 +39,9 @@ func generate_doors() -> void:
 	Door.new(rooms_array[0], rooms_array[1]).print_door()
 	
 	## 1st for loop (make sure all rooms are connected)
+	# TODO consider moving first loop to after 2nd loop
 	for i in range(rooms_array.size() - 2):
+		break
 		doors_array.append(
 			Door.new(rooms_array[i + 1], 
 					rooms_array[i + 2])
@@ -48,25 +50,29 @@ func generate_doors() -> void:
 	
 	print("2ND LOOP")
 	## 2nd for loop (add random doors for each room)
-	for i in range(rooms_array.size() - 1):
-		var room1 : int
-		var room2 : int
-		var new_door : Door
-		var reverse_door : Door
-		# used to check against reverse doors
-		# Ex. If {A, B} exists, then {B, A} shouldn't exist
-		
-		while (new_door in doors_array) or (reverse_door in doors_array) or !new_door:
-			room1 = i + 1
-			room2 = randi_range(1, rooms_array.size() - 1)
-			while room2 == room1:
+	for loop in range(clampi(round(rooms_array.size() / 5), 1, 2)):
+		for i in range(rooms_array.size() - 1):
+			var room1 : int
+			var room2 : int
+			var new_door : Door
+			
+			for j in range(rooms_array.size()):
+				room1 = i + 1
 				room2 = randi_range(1, rooms_array.size() - 1)
-				
-			new_door = Door.new(rooms_array[room1], 
-								rooms_array[room2])
-			reverse_door = Door.new(rooms_array[room2],
-									rooms_array[room1])
-									
-		
-		doors_array.append(new_door)
-		new_door.print_door()
+				while room2 == room1 or abs(room2 - room1) == 1:
+					room2 = randi_range(1, rooms_array.size() - 1)
+					
+				if not has_reverse_door(rooms_array[room1], rooms_array[room2]):
+					new_door = Door.new(rooms_array[room1], rooms_array[room2])
+					break
+			
+			if new_door:
+				doors_array.append(new_door)
+				new_door.print_door()
+			
+
+func has_reverse_door(room1: Room, room2: Room) -> bool:
+	for door in doors_array:
+		if (door.room1 == room2 and door.room2 == room1) or (door.room1 == room1 and door.room2 == room2):
+			return true
+	return false

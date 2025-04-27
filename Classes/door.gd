@@ -14,6 +14,9 @@ func _init(_room1 : Room, _room2 : Room) -> void:
 	room2 = _room2
 	cost = randi_range(1, 9)
 	is_locked = true
+
+func print_door() -> void:
+	print("{",room1.letter_id, ", ", room2.letter_id,"}")
 	
 func check_rooms(search : Room) -> bool:
 	## Checks if room exist within edge

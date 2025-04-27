@@ -9,6 +9,12 @@ var room2 : Room
 var cost : int = randi_range(1, 9)
 var is_locked : bool = true
 
+func _init(_room1 : Room, _room2 : Room) -> void:
+	room1 = _room1
+	room2 = _room2
+	cost = randi_range(1, 9)
+	is_locked = true
+	
 func check_rooms(search : Room) -> bool:
 	## Checks if room exist within edge
 	if room1 == search or room2 == search:

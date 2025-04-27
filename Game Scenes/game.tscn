@@ -18,14 +18,14 @@ texture = ExtResource("1_k8ln2")
 
 [node name="ColorModulate" type="CanvasModulate" parent="Background"]
 
+[node name="DoorContainer" type="HBoxContainer" parent="."]
+offset_right = 40.0
+offset_bottom = 40.0
+alignment = 1
+
 [node name="LightOverlay" type="TextureRect" parent="."]
 offset_left = -480.0
 offset_top = -360.0
 offset_right = 480.0
 offset_bottom = 360.0
 texture = ExtResource("2_37ubt")
-
-[node name="DoorContainer" type="HBoxContainer" parent="."]
-offset_right = 40.0
-offset_bottom = 40.0
-alignment = 1

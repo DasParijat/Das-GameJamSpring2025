@@ -2,10 +2,9 @@ extends Node2D
 
 @onready var color_modulate : CanvasModulate = $Room/Background/ColorModulate
 @onready var door_container : HBoxContainer = $Room/DoorContainer
+@onready var background: TextureRect = $Room/Background
 @onready var points_label : Label = $PointsLabel
 @onready var orb : TextureButton = $Room/Orb
-
-#var tween : Tween = Tween.new()
 
 var cur_room : Room
 var points : int
@@ -29,10 +28,11 @@ func _ready() -> void:
 	
 	GRH.points = PrimMST.new().calculate_mst(rooms_array, doors_array)
 	if GRH.points == 0:
-		GRH.points = 5 * doors_array.size() # free points for Prim failing
+		GRH.points = randi_range(3, 5) * doors_array.size() # free points for Prim failing
 	print(GRH.points)
 	
 	rooms_array[0].orb_found = true
+	background.texture = preload("uid://dkbm417ua0v0u")
 	cur_room = rooms_array[0]
 	load_room(cur_room)
 	
@@ -133,6 +133,7 @@ func _on_door_entered(door : Door) -> void:
 		doors_array.pop_front()
 	
 	cur_room = next_room
+	background.texture = preload("uid://bxr5f1evya50u")
 	load_room(next_room)
 
 func update_label_text() -> void:
@@ -146,6 +147,7 @@ func _on_orb_pressed() -> void:
 	update_label_text()
 	if GRH.orbs_found == rooms_array.size():
 		cur_room = Room.new("WIN", Color(0.8, 0.8, 0.8))
+		background.texture = preload("uid://57t1euthr6ct")
 		load_room(cur_room)
 		
 	orb.hide()

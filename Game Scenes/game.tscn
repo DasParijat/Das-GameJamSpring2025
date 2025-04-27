@@ -1,3 +1,31 @@
-[gd_scene format=3 uid="uid://dktjfoar41ceu"]
+[gd_scene load_steps=4 format=3 uid="uid://dktjfoar41ceu"]
+
+[ext_resource type="Texture2D" uid="uid://bxr5f1evya50u" path="res://Assets/Images/DungeonRoomBackground.png" id="1_k8ln2"]
+[ext_resource type="Script" path="res://Game Scenes/game.gd" id="1_v2p7b"]
+[ext_resource type="Texture2D" uid="uid://bgulib037v3af" path="res://Assets/Images/DungeonRoomLightOverlay.png" id="2_37ubt"]
 
 [node name="Game" type="Node2D"]
+script = ExtResource("1_v2p7b")
+
+[node name="Camera2D" type="Camera2D" parent="."]
+
+[node name="Background" type="TextureRect" parent="."]
+offset_left = -480.0
+offset_top = -360.0
+offset_right = 480.0
+offset_bottom = 360.0
+texture = ExtResource("1_k8ln2")
+
+[node name="ColorModulate" type="CanvasModulate" parent="Background"]
+
+[node name="LightOverlay" type="TextureRect" parent="."]
+offset_left = -480.0
+offset_top = -360.0
+offset_right = 480.0
+offset_bottom = 360.0
+texture = ExtResource("2_37ubt")
+
+[node name="DoorContainer" type="HBoxContainer" parent="."]
+offset_right = 40.0
+offset_bottom = 40.0
+alignment = 1

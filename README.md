@@ -1,5 +1,8 @@
 Topic: Connections
 
+Result - Prim's Dungeon WON the game jam with 53% of the vote.
+Future work on Prim's Dungeon will be done in a seperate repo
+
 Idea - Prim's Dungeon
 Description: 
 	Prim's Dungeon is based off Prim's Algo of finding the MST of a graph. However instead of
